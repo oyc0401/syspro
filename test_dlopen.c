@@ -1,31 +1,55 @@
+// test_dlopen.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
 
-typedef int (*add_fn)(int, int);
+typedef char* (*big_fn)(const char*, const char*);
 
 int main(void) {
-    void *handle = dlopen("./libadd.so", RTLD_NOW);
+    void* handle;
+    big_fn big_add = NULL;
+    big_fn big_sub = NULL;
+    char* error;
+
+    // 1) dlopen
+    handle = dlopen("./libbig.so", RTLD_LAZY);
     if (!handle) {
-        fprintf(stderr, "dlopen failed: %s\n", dlerror());
-        return 1;
+        fprintf(stderr, "%s\n", dlerror());
+        exit(1);
     }
 
-    dlerror(); // clear existing errors
-
-    add_fn addp = (add_fn)dlsym(handle, "add");
-    const char *err = dlerror();
-    if (err) {
-        fprintf(stderr, "dlsym failed: %s\n", err);
+    // 2) dlsym: big_add
+    *(void**)(&big_add) = dlsym(handle, "big_add");
+    if ((error = dlerror()) != NULL) {
+        fprintf(stderr, "%s\n", error);
         dlclose(handle);
-        return 1;
+        exit(1);
     }
 
-    printf("add(7, 8) = %d\n", addp(7, 8));
-
-    if (dlclose(handle) != 0) {
-        fprintf(stderr, "dlclose failed: %s\n", dlerror());
-        return 1;
+    // 3) dlsym: big_sub
+    *(void**)(&big_sub) = dlsym(handle, "big_sub");
+    if ((error = dlerror()) != NULL) {
+        fprintf(stderr, "%s\n", error);
+        dlclose(handle);
+        exit(1);
     }
+
+    // 4) call functions
+    char* r1 = big_add("999999999999999999999999", "1");
+    char* r2 = big_sub("5", "7");
+
+
+    printf("add = %s\n", r1);
+    printf("sub = %s\n", r2);
+
+    free(r1);
+    free(r2);
+
+    // 5) dlclose
+    if (dlclose(handle) < 0) {
+        fprintf(stderr, "%s\n", dlerror());
+        exit(1);
+    }
+
     return 0;
 }
