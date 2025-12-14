@@ -1,5 +1,6 @@
-# CSE3209 시스템 프로그래밍 (2025 Fall)
-## 프로젝트: Custom Library in Linux (Static / Shared / Run-time Linking)
+# CSE3209 시스템 프로그래밍 과제
+
+12223759 오유찬
 
 이 프로젝트는 `long long` 범위를 넘어서는 **큰 정수(Big Integer) 덧셈/뺄셈**을 문자열 기반으로 제공하는 간단한 라이브러리입니다.
 
@@ -106,10 +107,5 @@ int main(void) {
 ---
 
 ## 5) 스크린샷
-
-터미널에서 아래 중 하나 이상 실행 결과가 보이도록 스크린샷 1장 이상 첨부:
-
-* `./test_static`
-* `LD_LIBRARY_PATH=. ./test_shared`
-* `./test_dlopen`
+![terminal.png](terminal.png)
 
