@@ -1,1 +1,7 @@
 .idea
+
+test_dlopen
+test_shared
+test_static
+add.o
+add.pic.o
